@@ -62,7 +62,7 @@ func (h Handler) Payment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.useCase.MakePayment(claims.Username); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusPaymentRequired)
 		return
 	}
 

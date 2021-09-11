@@ -19,11 +19,16 @@ func NewPaymentRepository(db *pgxpool.Pool) *PaymentRepository {
 }
 func (r PaymentRepository) MakePayment(username string) error {
 
-	if _, err := r.GetAccount(username); err != nil {
+	account, err := r.GetAccount(username)
+	if err != nil {
 		return fmt.Errorf("cannot find person with thhat username")
 	}
 
-	_, err := r.db.Exec(context.Background(), `UPDATE accounts SET balance = balance - round(1.1 , 1) WHERE username = $1`, username)
+	if account.AccountBalance < 1.1 {
+		return fmt.Errorf("not enough money")
+	}
+
+	_, err = r.db.Exec(context.Background(), `UPDATE accounts SET balance = balance - round(1.1 , 1) WHERE username = $1`, username)
 	if err != nil {
 		return fmt.Errorf("cannot spend that much money")
 	}
