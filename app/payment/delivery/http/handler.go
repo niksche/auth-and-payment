@@ -6,19 +6,11 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/niksche/flex/app/payment"
-)
-
-var (
-	jwtKey = []byte("secretkeydonttellanyonepls")
+	jwtConfig "github.com/niksche/flex/app/utils/config"
 )
 
 type Handler struct {
 	useCase payment.UseCase
-}
-
-type Claims struct {
-	Username           string `json:"username"`
-	jwt.StandardClaims ``
 }
 
 func NewHandler(useCase payment.UseCase) *Handler {
@@ -40,11 +32,11 @@ func (h Handler) Payment(w http.ResponseWriter, r *http.Request) {
 
 	tokenStr := cookie.Value
 
-	claims := &Claims{}
+	claims := &jwtConfig.Claims{}
 
 	tkn, err := jwt.ParseWithClaims(tokenStr, claims,
 		func(t *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
+			return jwtConfig.JwtKey, nil
 		})
 
 	if err != nil {

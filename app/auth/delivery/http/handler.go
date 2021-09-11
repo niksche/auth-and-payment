@@ -7,19 +7,11 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/niksche/flex/app/auth"
-)
-
-var (
-	jwtKey = []byte("secretkeydonttellanyonepls")
+	jwtConfig "github.com/niksche/flex/app/utils/config"
 )
 
 type Handler struct {
 	useCase auth.UseCase
-}
-
-type Claims struct {
-	Username           string `json:"username"`
-	jwt.StandardClaims ``
 }
 
 func NewHandler(useCase auth.UseCase) *Handler {
@@ -68,7 +60,7 @@ func (h Handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 	expirationTime := time.Now().Add(time.Minute * 5)
 
-	claims := &Claims{
+	claims := &jwtConfig.Claims{
 		Username: userData.Username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
@@ -76,7 +68,7 @@ func (h Handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(jwtConfig.JwtKey)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
