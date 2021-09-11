@@ -35,7 +35,7 @@ var (
 	}
 )
 
-func initDB() *pgxpool.Pool {
+func InitDB() *pgxpool.Pool {
 	dbConnPool, err := ConnectToDB(DbConfig)
 	if err != nil {
 		return nil

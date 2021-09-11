@@ -1,25 +1,24 @@
 package app
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/jackc/pgx/v4/pgxpool"
 
 	authdelivery "github.com/niksche/flex/app/auth/delivery/http"
 	authpostgres "github.com/niksche/flex/app/auth/repository/postgres"
 	authusecase "github.com/niksche/flex/app/auth/usecase"
-	"github.com/niksche/flex/app/utils/config"
 
 	paymentdelivery "github.com/niksche/flex/app/payment/delivery/http"
 	paymentpostgres "github.com/niksche/flex/app/payment/repository/postgres"
 	paymentusecase "github.com/niksche/flex/app/payment/usecase"
+
+	conf "github.com/niksche/flex/app/utils/config"
 )
 
 func StartNew() {
-	db := initDB()
+	db := conf.InitDB()
 	userRepo := authpostgres.NewUserRepository(db)
 	userUC := authusecase.NewAuthUseCase(userRepo)
 	userHandlers := authdelivery.NewHandler(userUC)
@@ -38,20 +37,4 @@ func StartNew() {
 		fmt.Printf("cannot start service:", err)
 	}
 	fmt.Printf("started server at :8080")
-}
-func initDB() *pgxpool.Pool {
-	dbConnPool, err := ConnectToDB(config.DbConfig)
-	if err != nil {
-		return nil
-	}
-	return dbConnPool
-}
-
-func ConnectToDB(db config.DBConfig) (*pgxpool.Pool, error) {
-	connStr := fmt.Sprintf(
-		"host=%s dbname=%s user=%s password=%s pool_max_conns=%d",
-		db.DbHost, db.DbName, db.DbUser, db.DbPassword, db.DbMaxConns,
-	)
-
-	return pgxpool.Connect(context.Background(), connStr)
 }
