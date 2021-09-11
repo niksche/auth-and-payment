@@ -9,5 +9,4 @@ type User struct {
 type UserRepository interface {
 	CreateUser(username, password string) error
 	GetUser(username string) (User, error)
-	MakePayment(username string) error
 }

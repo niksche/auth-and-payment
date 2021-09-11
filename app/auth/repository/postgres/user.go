@@ -57,17 +57,3 @@ func (r UserRepository) GetUser(username string) (auth.User, error) {
 	}
 	return user, nil
 }
-
-func (r UserRepository) MakePayment(username string) error {
-
-	if _, err := r.GetUser(username); err != nil {
-		return fmt.Errorf("cannot find person with thhat username")
-	}
-
-	_, err := r.db.Exec(context.Background(), `UPDATE accounts SET balance = balance - round(1.1 , 1) WHERE username = $1`, username)
-	if err != nil {
-		return fmt.Errorf("cannot spend that much money")
-	}
-
-	return nil
-}

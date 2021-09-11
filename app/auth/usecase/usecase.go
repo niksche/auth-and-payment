@@ -43,11 +43,3 @@ func (u *AuthUseCase) LoginUser(username, password string) error {
 	return nil
 
 }
-
-func (u *AuthUseCase) MakePayment(username string) error {
-	err := u.userRepo.MakePayment(username)
-	if err != nil {
-		return fmt.Errorf("cannot find user")
-	}
-	return nil
-}
