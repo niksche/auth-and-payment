@@ -33,7 +33,6 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.useCase.SignUp(userData.Username, userData.Password); err != nil {
-		// if err := h.useCase.SignUp("ef", "fe"); err != nil {
 		w.Write([]byte("error while creating new profile"))
 		return
 	}
